@@ -1,0 +1,49 @@
+name: Build Go and Rust APIs using GitHub actions.
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: blacksmith-4vcpu-ubuntu-2204
+    strategy:
+      matrix:
+        language: [go, rust]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go for the Go project
+        if: matrix.language == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+
+      - name: Setup Rust for the rust project
+        if: matrix.language == 'rust'
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build projects
+        run: |
+          if [ "${{ matrix.language }}" == "go" ]; then
+            cd budget-api && go build -o budget-api -ldflags="-s -w" cmd/api/main.go 
+          elif [ "${{ matrix.language }}" == "rust" ]; then
+            cd rust-web-api && cargo build --release
+          fi
+      
+      - name: Confirm Binary presense
+        run: |
+          if [ "${{ matrix.language }}" == "go" ]; then
+            file budget-api/budget-api
+          elif [ "${{ matrix.language }}" == "rust" ]; then
+            file rust-web-api/target/release/rust-web-api
+          fi
+
+
+
