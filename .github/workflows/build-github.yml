@@ -1,4 +1,4 @@
-name: Build Go and Rust APIs using GitHub actions.
+name: Build Go and Rust APIs
 
 on:
   push:
