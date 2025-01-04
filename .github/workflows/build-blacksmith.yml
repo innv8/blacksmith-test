@@ -1,4 +1,4 @@
-name: Build Go and Rust APIs using GitHub actions.
+name: Build Go and Rust APIs on Blacksmith
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: blacksmith-4vcpu-ubuntu-2204
+    runs-on: blacksmith-4vcpu-ubuntu-2204 
     strategy:
       matrix:
         language: [go, rust]
@@ -18,7 +18,7 @@ jobs:
 
       - name: Setup Go for the Go project
         if: matrix.language == 'go'
-        uses: actions/setup-go@v5
+        uses: useblacksmith/setup-go@v6
         with:
           go-version: "1.23"
 
